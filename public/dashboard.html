@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Record Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-brand">Record System</div>
+        <div class="nav-links">
+            <a href="/dashboard.html" class="active">Collections</a>
+            <a href="#" id="schemaBtn">Schema Manager</a>
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="header-row">
+            <h1>Data Collections</h1>
+            <button class="btn-primary" id="newColBtn">+ New Collection</button>
+        </div>
+
+        <div id="colList" class="grid-layout">
+            <!-- Collections loaded here -->
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        async function loadCollections() {
+            const cols = await api.getCollections();
+            const list = document.getElementById('colList');
+            list.innerHTML = cols.map(col => `
+                <div class="card">
+                    <h3>${col.name}</h3>
+                    <p>${col.count} records</p>
+                    <div class="card-actions">
+                        <button onclick="openCollection('${col.id}')" class="btn-sm">Manage</button>
+                        <button onclick="deleteCol('${col.id}')" class="btn-sm btn-danger">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openCollection(id) {
+            window.location.href = `/records.html?colId=${id}`;
+        }
+
+        async function deleteCol(id) {
+            if (confirm('Delete this collection and all its records?')) {
+                await api.deleteCollection(id);
+                loadCollections();
+            }
+        }
+
+        document.getElementById('newColBtn').onclick = () => {
+            const body = document.getElementById('modalBody');
+            body.innerHTML = `
+                <h2 style=\"margin-bottom: 1.5rem\">Create Collection</h2>
+                <div class=\"form-group\">
+                    <label>Collection Name</label>
+                    <input type=\"text\" id=\"colName\" placeholder=\"e.g. Employee Records\">
+                </div>
+                <div class=\"form-group\">
+                    <label>Collection Schema</label>
+                    <div class=\"schema-builder\">
+                        <div class=\"builder-header\">
+                            <span>Fields Configuration</span>
+                            <span id=\"fieldCount\">0 fields</span>
+                        </div>
+                        <div id=\"builderList\" class=\"builder-list\">
+                            <!-- Fields added here -->
+                        </div>
+                        <div class=\"builder-footer\">
+                            <button type=\"button\" id=\"addFieldBtn\" class=\"btn-add-field\">+ Add Field</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            let currentSchema = [
+                { id: Date.now(), name: 'full_name', label: 'Full Name', type: 'text', required: true },
+                { id: Date.now() + 1, name: 'email', label: 'Email', type: 'email', required: false }
+            ];
+
+            const builderList = document.getElementById('builderList');
+            const fieldCountLabel = document.getElementById('fieldCount');
+            const addFieldBtn = document.getElementById('addFieldBtn');
+            const schemaFileInput = document.getElementById('schemaFileInput');
+
+            function renderBuilder() {
+                fieldCountLabel.textContent = `${currentSchema.length} field${currentSchema.length === 1 ? '' : 's'}`;
+                builderList.innerHTML = '';
+                
+                currentSchema.forEach((field, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'field-card';
+                    card.draggable = true;
+                    card.dataset.id = field.id;
+                    
+                    card.innerHTML = `
+                        <div class=\"drag-handle\">⠿</div>
+                        <div class=\"form-group\" style=\"margin:0\">
+                            <input type=\"text\" class=\"field-input\" placeholder=\"Field ID\" value=\"${field.name}\" onchange=\"updateField(${field.id}, 'name', this.value)\">
+                        </div>
+                        <div class=\"form-group\" style=\"margin:0\">
+                            <input type=\"text\" class=\"field-input\" placeholder=\"Label\" value=\"${field.label}\" onchange=\"updateField(${field.id}, 'label', this.value)\">
+                        </div>
+                        <div class=\"form-group\" style=\"margin:0\">
+                            <select class=\"field-input\" onchange=\"updateField(${field.id}, 'type', this.value)\">
+                                <option value=\"text\" ${field.type === 'text' ? 'selected' : ''}>Text</option>
+                                <option value=\"number\" ${field.type === 'number' ? 'selected' : ''}>Number</option>
+                                <option value=\"email\" ${field.type === 'email' ? 'selected' : ''}>Email</option>
+                                <option value=\"date\" ${field.type === 'date' ? 'selected' : ''}>Date</option>
+                                <option value=\"boolean\" ${field.type === 'boolean' ? 'selected' : ''}>Boolean</option>
+                            </select>
+                        </div>
+                        <div class=\"field-checkbox-group\">
+                            <input type=\"checkbox\" ${field.required ? 'checked' : ''} onchange=\"updateField(${field.id}, 'required', this.checked)\">
+                            <label>Required</label>
+                        </div>
+                        <button class=\"btn-remove-field\" onclick=\"removeField(${field.id})\" title=\"Remove Field\">×</button>
+                    `;
+                    
+                    card.addEventListener('dragstart', (e) => {
+                        e.target.classList.add('dragging');
+                        e.dataTransfer.setData('text/plain', index);
+                    });
+                    
+                    card.addEventListener('dragend', (e) => {
+                        e.target.classList.remove('dragging');
+                    });
+
+                    builderList.appendChild(card);
+                });
+
+                builderList.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const draggingElement = document.querySelector('.dragging');
+                    if (!draggingElement) return;
+                    const afterElement = getDragAfterElement(builderList, e.clientY);
+                    if (afterElement == null) {
+                        builderList.appendChild(draggingElement);
+                    } else {
+                        builderList.insertBefore(draggingElement, afterElement);
+                    }
+                });
+
+                builderList.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const newOrder = Array.from(builderList.children).map(child => {
+                        const id = parseInt(child.dataset.id);
+                        return currentSchema.find(f => f.id === id);
+                    });
+                    currentSchema = newOrder;
+                    renderBuilder();
+                });
+            }
+
+            function getDragAfterElement(container, y) {
+                const draggableElements = [...container.querySelectorAll('.field-card:not(.dragging)')];
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+            }
+
+            window.updateField = (id, key, value) => {
+                const field = currentSchema.find(f => f.id === id);
+                if (field) {
+                    field[key] = value;
+                    fieldCountLabel.textContent = `${currentSchema.length} field${currentSchema.length === 1 ? '' : 's'}`;
+                }
+            };
+
+            window.removeField = (id) => {
+                currentSchema = currentSchema.filter(f => f.id !== id);
+                renderBuilder();
+            };
+
+            addFieldBtn.onclick = () => {
+                currentSchema.push({
+                    id: Date.now(),
+                    name: '',
+                    label: '',
+                    type: 'text',
+                    required: false
+                });
+                renderBuilder();
+            };
+
+            async function handleSchemaFile(file) {
+                if (!file) return;
+                const text = await file.text();
+                try {
+                    const parsed = JSON.parse(text);
+                    if (!Array.isArray(parsed)) throw new Error('Schema must be a JSON array.');
+                    currentSchema = parsed.map((f, i) => ({
+                        ...f,
+                        id: Date.now() + i
+                    }));
+                    renderBuilder();
+                } catch (err) {
+                    alert('Invalid JSON schema. Please upload a valid JSON array.');
+                }
+            }
+
+            document.getElementById('modalConfirm').onclick = async () => {
+                const name = document.getElementById('colName').value;
+                if (!name) {
+                    alert('Please enter a collection name.');
+                    return;
+                }
+                if (currentSchema.length === 0) {
+                    alert('Please add at least one field to the schema.');
+                    return;
+                }
+                const schema = currentSchema.map(({ id, ...rest }) => rest);
+                await api.createCollection({ name, schema });
+                closeModal();
+                loadCollections();
+            };
+
+            renderBuilder();
+            document.getElementById('modalOverlay').classList.remove('hidden');
+        };
+
+        document.getElementById('logoutBtn').onclick = async () => {
+            await api.logout();
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        };
+
+        window.onload = loadCollections;
+    </script>
+</body>
+</html>

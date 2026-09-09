@@ -1,0 +1,29 @@
+
+# Editor/IDE files
+.vscode/
+
+# Logs
+*.log
+
+# Dependency folders
+node_modules/
+
+# Build output
+build/
+dist/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Environment files
+.env
+.env.*
+
+# JavaScript/Node
+*-debug.log*
+
+# Miscellaneous
+coverage/
+*.sqlite3

@@ -1,0 +1,349 @@
+:root {
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --danger: #ef4444;
+    --border: #e2e8f0;
+    --radius: 8px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.main-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.nav-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary);
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.nav-links a.active {
+    color: var(--primary);
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.btn-primary, .btn-secondary, .btn-sm, .btn-danger {
+    cursor: pointer;
+    border-radius: var(--radius);
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+}
+
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-secondary {
+    background: var(--border);
+    color: var(--text);
+    padding: 0.6rem 1.2rem;
+}
+
+.btn-sm {
+    padding: 0.3rem 0.8rem;
+    background: #f1f5f9;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: var(--danger);
+}
+
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-card {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    margin-top: 0.75rem;
+    min-height: 200px;
+    resize: vertical;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.88rem;
+    background: #f8fafc;
+}
+
+.schema-dropzone {
+    border: 2px dashed #cbd5e1;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #f8fafc, #eef6ff);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.schema-dropzone:hover,
+.schema-dropzone.drag-over {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.dropzone-content {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    color: var(--text-light);
+}
+
+.dropzone-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.dropzone-subtitle {
+    margin-top: 0.2rem;
+    font-size: 0.82rem;
+    opacity: 0.8;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 600px;
+}
+
+.modal-footer {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Schema Builder Styles */
+.schema-builder {
+    margin-top: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fcfcfc;
+    overflow: hidden;
+}
+
+.builder-header {
+    background: #f1f5f9;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.builder-list {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 100px;
+}
+
+.field-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr auto auto auto;
+    gap: 0.75rem;
+    align-items: center;
+    cursor: default;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.field-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.field-card.dragging {
+    opacity: 0.5;
+    border: 2px dashed var(--primary);
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    user-select: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.field-input {
+    padding: 0.4rem;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 100%;
+}
+
+.field-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.field-checkbox-group input {
+    width: auto;
+}
+
+.btn-remove-field {
+    color: var(--danger);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0 0.5rem;
+}
+
+.btn-remove-field:hover {
+    color: #b91c1c;
+}
+
+.builder-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-add-field {
+    background: #fff;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-add-field:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.hidden {
+    display: none !important;
+}
+

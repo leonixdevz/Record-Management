@@ -1,0 +1,126 @@
+{
+  "users": [
+    {
+      "id": "default-admin",
+      "username": "admin",
+      "fullName": "System Administrator",
+      "salt": "initial-salt",
+      "passwordHash": "3fd795714c2c9ffbc1f118d0d3dd63da0120b7d0b97806e6c338edaa645882a0"
+    }
+  ],
+  "collections": {
+    "b7a090b5-e1d0-4b4f-b626-71d8c3614522": {
+      "name": "FPI Student Record",
+      "schema": [
+        {
+          "name": "student_id",
+          "label": "Student ID / Roll Number",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "first_name",
+          "label": "First Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "last_name",
+          "label": "Last Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "date_of_birth",
+          "label": "Date of Birth",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "gender",
+          "label": "Gender",
+          "type": "select",
+          "required": false
+        },
+        {
+          "name": "grade_level",
+          "label": "Grade / Class Level",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "guardian_name",
+          "label": "Guardian Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "guardian_phone",
+          "label": "Guardian Phone",
+          "type": "tel",
+          "required": true
+        },
+        {
+          "name": "email",
+          "label": "Student Email",
+          "type": "email",
+          "required": false
+        },
+        {
+          "name": "enrollment_date",
+          "label": "Enrollment Date",
+          "type": "date",
+          "required": false
+        }
+      ],
+      "data": [
+        {
+          "id": "6cf4c2a7-da6d-4cf9-a79a-b3644e5f359b",
+          "student_id": "2460113253",
+          "first_name": "Toheeb",
+          "last_name": "Adeleke",
+          "date_of_birth": "2007-07-31",
+          "gender": "Male",
+          "grade_level": "DE 200lv",
+          "guardian_name": "Olusoji Oluseyi",
+          "guardian_phone": "08023056919",
+          "email": "olusojileo@gmail.com",
+          "enrollment_date": "2026-09-08",
+          "createdAt": "2026-09-08T21:19:14.250Z"
+        }
+      ]
+    },
+    "2fbecbbd-ee80-41db-8303-60ff9c5d3f05": {
+      "name": "General",
+      "schema": [
+        {
+          "name": "full_name",
+          "label": "Full Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "email",
+          "label": "Email",
+          "type": "email",
+          "required": false
+        },
+        {
+          "name": "age",
+          "label": "Age",
+          "type": "number",
+          "required": true
+        }
+      ],
+      "data": [
+        {
+          "id": "7c0d0fd2-b9f9-4b02-9ec7-e9abb9b90729",
+          "full_name": "socos",
+          "email": "olusojileo@gmail.com",
+          "age": "18",
+          "createdAt": "2026-09-09T03:43:17.011Z"
+        }
+      ]
+    }
+  }
+}
